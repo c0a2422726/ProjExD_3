@@ -140,22 +140,23 @@ class Bomb:
         self.rct.move_ip(self.vx, self.vy)
         screen.blit(self.img, self.rct)
 
-    class Score:
-        def __init__(self):
-            self.fonto = pg.font.SysFont(None, 30) #フォント設定
-            self.color = (0, 0, 255) #色
-            self.value = 0  #初期値
-            self.img = self.fonto.render(f"Score: {self.value}", 0, self.color)
-            self.rct = self.img.get_rect()
-            self.rct.topleft = (100, HEIGHT - 50)
+class Score:
+    def __init__(self):
+        self.fonto = pg.font.SysFont(None, 30) #フォント設定
+        self.color = (0, 0, 255) #色
+        self.value = 0  #初期値
+        self.img = self.fonto.render(f"Score: {self.value}", 0, self.color)
+        self.rct = self.img.get_rect()
+        self.rct.topleft = (100, HEIGHT - 50)
 
-        def update(self, screen: pg.Surface):
-            self.img = self.fonto.render(f"Score: {self.value}", 0, self.color) #Surface
-            screen.blit(self.img, self.rct) #スクリーンにblit
+    def update(self, screen: pg.Surface):
+        self.img = self.fonto.render(f"Score: {self.value}", 0, self.color) #Surface
+        screen.blit(self.img, self.rct) #スクリーンにblit
+
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
-    score = Score() #スコア初期化
+    score = Score() #score初期化
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((300, 200))
@@ -169,7 +170,6 @@ def main():
     clock = pg.time.Clock()
     tmr = 0
     while True:
-        score.update(screen)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
@@ -184,6 +184,11 @@ def main():
                 fonto = pg.font.Font(None, 80)
                 txt = fonto.render("Game Over", True, (255, 0, 0))
                 screen.blit(txt, [WIDTH//2-150, HEIGHT//2])
+
+                fonto = pg.font.Font(None, 80) 
+                txt = fonto.render("Game Over", True, (255, 0, 0)) #gameover_render
+                screen.blit(txt, [WIDTH//2-150, HEIGHT//2]) #表示
+
                 bird.change_img(8, screen)
                 pg.display.update()
                 time.sleep(1)
@@ -197,7 +202,7 @@ def main():
                     score.value += 1
                     bird.change_img(6, screen)  # 練習3：こうかとん喜びエフェクト
                     pg.display.update()
-                    time.sleep(1)
+                    #time.sleep(1)
         
         bombs = [bomb for bomb in bombs if bomb is not None]
 
@@ -207,8 +212,7 @@ def main():
             beam.update(screen)
         for bomb in bombs:
             bomb.update(screen)
-        
-        score.update(screen) #score呼び出し
+        score.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
